@@ -17,3 +17,8 @@ export interface SignInRequestBody {
   email: string;
   password: string;
 }
+
+export interface SignUpRequestBody extends SignInRequestBody {
+  username: string;
+  repeatPassword: string;
+}

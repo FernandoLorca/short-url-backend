@@ -1,10 +1,66 @@
 import { Request, Response } from 'express';
+import jwt, { Secret } from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
 import { User } from './users.model';
+import type { SignUpRequestBody } from './types';
+
+interface NewUser {
+  dataValues: {
+    id: number;
+    username: string;
+    password: string;
+    email: string;
+  };
+}
 
 interface SignInRequestBody {
+  username: string;
   email: string;
   password: string;
 }
+
+const createUser = async (req: Request, res: Response): Promise<void> => {
+  const { username, email, password }: SignUpRequestBody = req.body;
+
+  try {
+    const hashPassword: string = await bcrypt.hash(password, 10);
+
+    const newUser: NewUser = await User.create({
+      username,
+      email,
+      password: hashPassword,
+    });
+
+    const generateToken: string = jwt.sign(
+      {
+        id: newUser.dataValues.id,
+        email: newUser.dataValues.email,
+      },
+      process.env.JWT_SECRET as Secret,
+      {
+        expiresIn: '24h',
+      }
+    );
+
+    res.status(201).json({
+      ok: true,
+      status: 201,
+      message: 'User created',
+      user: {
+        id: newUser.dataValues.id,
+        username: newUser.dataValues.username,
+        email: newUser.dataValues.email,
+        token: generateToken,
+      },
+    });
+  } catch (error: unknown) {
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      message: `Internal server error: ${error}`,
+    });
+  }
+};
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password }: SignInRequestBody = req.body;
@@ -44,5 +100,6 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 export const usersController = {
+  createUser,
   getUser,
 };
