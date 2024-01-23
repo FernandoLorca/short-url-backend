@@ -10,16 +10,16 @@ export const User = sequelize.define<UserInstance>('user', {
     autoIncrement: true,
   },
   username: {
-    type: DataTypes.STRING(20),
+    type: DataTypes.STRING(),
     allowNull: false,
     unique: true,
   },
-  email: {
-    type: DataTypes.STRING(30),
+  password: {
+    type: DataTypes.STRING(),
     allowNull: false,
   },
-  password: {
-    type: DataTypes.STRING(18),
+  email: {
+    type: DataTypes.STRING(),
     allowNull: false,
   },
 });
