@@ -12,3 +12,8 @@ interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
 export interface UserInstance
   extends Model<UserAttributes, UserCreationAttributes>,
     UserAttributes {}
+
+export interface SignInRequestBody {
+  email: string;
+  password: string;
+}
