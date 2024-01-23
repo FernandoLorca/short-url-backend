@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/connection';
 import { UrlsInstance } from './types';
 
-export const Urls = sequelize.define<UrlsInstance>('urls', {
+export const Urls = sequelize.define<UrlsInstance>('Urls', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
