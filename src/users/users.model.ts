@@ -3,7 +3,7 @@ import { sequelize } from '../database/connection';
 import { Urls } from '../urls/urls.model';
 import { UserInstance } from './types';
 
-export const User = sequelize.define<UserInstance>('User', {
+export const User = sequelize.define<UserInstance>('user', {
   id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -14,12 +14,12 @@ export const User = sequelize.define<UserInstance>('User', {
     allowNull: false,
     unique: true,
   },
-  password: {
-    type: DataTypes.STRING(18),
-    allowNull: false,
-  },
   email: {
     type: DataTypes.STRING(30),
+    allowNull: false,
+  },
+  password: {
+    type: DataTypes.STRING(18),
     allowNull: false,
   },
 });
