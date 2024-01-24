@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import jwt, { Secret } from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { User } from './users.model';
-import type { SignUpRequestBody } from './types';
+import type { SignUpRequestBody, AuthenticatedRequest } from './types';
 
 interface NewUser {
   dataValues: {
@@ -11,12 +11,6 @@ interface NewUser {
     password: string;
     email: string;
   };
-}
-
-interface SignInRequestBody {
-  username: string;
-  email: string;
-  password: string;
 }
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
@@ -62,14 +56,16 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { email, password }: SignInRequestBody = req.body;
-
+const getUser = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<void> => {
   try {
+    const reqUser = req.user?.user.dataValues;
     const user = await User.findOne({
       where: {
-        email,
-        password,
+        email: reqUser?.email,
+        password: reqUser?.password,
       },
     });
 

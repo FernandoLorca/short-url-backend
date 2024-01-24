@@ -1,17 +1,18 @@
+import { Request } from 'express';
 import { Optional, Model } from 'sequelize';
 
-interface UserAttributes {
+interface UsersAttributes {
   id: number;
   username: string;
   password: string;
   email: string;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id'> {}
+interface UsersCreationAttributes extends Optional<UsersAttributes, 'id'> {}
 
 export interface UserInstance
-  extends Model<UserAttributes, UserCreationAttributes>,
-    UserAttributes {}
+  extends Model<UsersAttributes, UsersCreationAttributes>,
+    UsersAttributes {}
 
 export interface SignInRequestBody {
   email: string;
@@ -21,4 +22,23 @@ export interface SignInRequestBody {
 export interface SignUpRequestBody extends SignInRequestBody {
   username: string;
   repeatPassword: string;
+}
+
+export interface UsersInstance
+  extends Model<UsersAttributes, UsersCreationAttributes>,
+    UsersAttributes {}
+
+interface RequestUser {
+  user: {
+    dataValues: {
+      id: number;
+      username: string;
+      password: string;
+      email: string;
+    };
+  };
+}
+
+export interface AuthenticatedRequest extends Request {
+  user?: RequestUser;
 }
