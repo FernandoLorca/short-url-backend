@@ -18,7 +18,7 @@ const JSONValidation = (
   req: Request,
   res: Response,
   next: NextFunction
-): void => {
+): boolean | undefined => {
   const bodyKeys = Object.keys(req.body);
 
   const JSONValidation = (reqBody: string[]): boolean => {
