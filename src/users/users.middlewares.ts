@@ -101,12 +101,30 @@ const signInJSONValidation = (
 ): void => {
   const bodyKeys = Object.keys(req.body);
 
-  if (!userUtilities.JSONValidation(bodyKeys)) {
+  const JSONValidation = (reqBody: string[]): boolean => {
+    if (
+      (reqBody.length === 2 &&
+        reqBody.includes('email') &&
+        reqBody.includes('password')) ||
+      (reqBody.length === 4 &&
+        reqBody.includes('username') &&
+        reqBody.includes('email') &&
+        reqBody.includes('password') &&
+        reqBody.includes('repeatPassword'))
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  if (!JSONValidation(bodyKeys)) {
     res.status(400).json({
       ok: false,
       status: 400,
       message: 'Invalid JSON',
     });
+    return;
   }
 
   next();

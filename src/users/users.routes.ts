@@ -14,6 +14,7 @@ usersRouter.post(
 
 usersRouter.post(
   '/signup',
+  userMiddlewares.signInJSONValidation,
   userMiddlewares.signUpInputsValidations,
   userMiddlewares.signUpVerificationByEmail,
   usersController.createUser
