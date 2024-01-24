@@ -7,7 +7,25 @@ const emailFormatValidation = (email: string) => {
 const passwordFormatValidation = (password: string) =>
   password.length < 6 || password.length > 24 ? false : true;
 
+const JSONValidation = (reqBody: string[]): boolean => {
+  if (
+    (reqBody.length === 2 &&
+      reqBody.includes('email') &&
+      reqBody.includes('password')) ||
+    (reqBody.length === 4 &&
+      reqBody.includes('username') &&
+      reqBody.includes('email') &&
+      reqBody.includes('password') &&
+      reqBody.includes('repeatPassword'))
+  ) {
+    return true;
+  }
+
+  return false;
+};
+
 export const userUtilities = {
+  JSONValidation,
   emailFormatValidation,
   passwordFormatValidation,
 };

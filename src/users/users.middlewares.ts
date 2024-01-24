@@ -94,6 +94,24 @@ const signUpVerificationByEmail = async (
   }
 };
 
+const signInJSONValidation = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const bodyKeys = Object.keys(req.body);
+
+  if (!userUtilities.JSONValidation(bodyKeys)) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Invalid JSON',
+    });
+  }
+
+  next();
+};
+
 const signInInputsValidations = (
   req: Request,
   res: Response,
@@ -179,6 +197,7 @@ const signInVerificationByEmail = async (
 };
 
 export const userMiddlewares = {
+  signInJSONValidation,
   signUpInputsValidations,
   signUpVerificationByEmail,
   signInInputsValidations,
