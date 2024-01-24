@@ -6,7 +6,7 @@ const usersRouter = Router();
 
 usersRouter.post(
   '/signin',
-  userMiddlewares.signInJSONValidation,
+  userMiddlewares.JSONValidation,
   userMiddlewares.signInInputsValidations,
   userMiddlewares.signInVerificationByEmail,
   usersController.getUser
@@ -14,7 +14,7 @@ usersRouter.post(
 
 usersRouter.post(
   '/signup',
-  userMiddlewares.signInJSONValidation,
+  userMiddlewares.JSONValidation,
   userMiddlewares.signUpInputsValidations,
   userMiddlewares.signUpVerificationByEmail,
   usersController.createUser

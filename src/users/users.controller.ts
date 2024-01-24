@@ -48,11 +48,13 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
       },
     });
   } catch (error: unknown) {
-    res.status(500).json({
-      ok: false,
-      status: 500,
-      message: `Internal server error: ${error}`,
-    });
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error}`,
+      });
+    }
   }
 };
 
@@ -87,11 +89,13 @@ const getUser = async (
       },
     });
   } catch (error) {
-    res.status(500).json({
-      ok: false,
-      status: 500,
-      message: `Internal server error: ${error}`,
-    });
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error}`,
+      });
+    }
   }
 };
 

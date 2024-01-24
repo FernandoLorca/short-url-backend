@@ -14,6 +14,42 @@ interface CustomRequest extends Request {
   };
 }
 
+const JSONValidation = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
+  const bodyKeys = Object.keys(req.body);
+
+  const JSONValidation = (reqBody: string[]): boolean => {
+    if (
+      (reqBody.length === 2 &&
+        reqBody.includes('email') &&
+        reqBody.includes('password')) ||
+      (reqBody.length === 4 &&
+        reqBody.includes('username') &&
+        reqBody.includes('email') &&
+        reqBody.includes('password') &&
+        reqBody.includes('repeatPassword'))
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  if (!JSONValidation(bodyKeys)) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Invalid JSON',
+    });
+    return;
+  }
+
+  next();
+};
+
 const signUpInputsValidations = (
   req: Request,
   res: Response,
@@ -86,48 +122,14 @@ const signUpVerificationByEmail = async (
 
     next();
   } catch (error) {
-    res.status(500).json({
-      ok: false,
-      status: 500,
-      message: `Internal server error: ${error}`,
-    });
-  }
-};
-
-const signInJSONValidation = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
-  const bodyKeys = Object.keys(req.body);
-
-  const JSONValidation = (reqBody: string[]): boolean => {
-    if (
-      (reqBody.length === 2 &&
-        reqBody.includes('email') &&
-        reqBody.includes('password')) ||
-      (reqBody.length === 4 &&
-        reqBody.includes('username') &&
-        reqBody.includes('email') &&
-        reqBody.includes('password') &&
-        reqBody.includes('repeatPassword'))
-    ) {
-      return true;
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error}`,
+      });
     }
-
-    return false;
-  };
-
-  if (!JSONValidation(bodyKeys)) {
-    res.status(400).json({
-      ok: false,
-      status: 400,
-      message: 'Invalid JSON',
-    });
-    return;
   }
-
-  next();
 };
 
 const signInInputsValidations = (
@@ -181,41 +183,35 @@ const signInVerificationByEmail = async (
       return;
     }
 
-    try {
-      const passwordMatch = await bcryptjs.compare(password, user.password);
+    const passwordMatch = await bcryptjs.compare(password, user.password);
 
-      if (!passwordMatch) {
-        res.status(400).json({
-          ok: false,
-          status: 400,
-          message: 'Incorrect password',
-        });
-        return;
-      }
+    if (!passwordMatch) {
+      res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'Incorrect password',
+      });
+      return;
+    }
 
-      (req as CustomRequest).user = {
-        user,
-      };
-    } catch (error) {
+    (req as CustomRequest).user = {
+      user,
+    };
+
+    next();
+  } catch (error) {
+    if (error instanceof Error) {
       res.status(500).json({
         ok: false,
         status: 500,
         message: `Internal server error: ${error}`,
       });
     }
-
-    next();
-  } catch (error) {
-    res.status(500).json({
-      ok: false,
-      status: 500,
-      message: `Internal server error: ${error}`,
-    });
   }
 };
 
 export const userMiddlewares = {
-  signInJSONValidation,
+  JSONValidation,
   signUpInputsValidations,
   signUpVerificationByEmail,
   signInInputsValidations,
