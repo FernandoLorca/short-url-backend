@@ -119,4 +119,25 @@ describe('getUser', () => {
       },
     });
   });
+
+  it('Should return an error if the user does not exist', async () => {
+    mockRequest.user = {
+      user: {
+        dataValues: {
+          id: expect.any(Number),
+          username: 'Fernando Lorca',
+          email: 'fernandolorca@gmail.com',
+          password: 'password',
+        },
+      },
+    };
+
+    await usersController.getUser(mockRequest, mockResponse);
+    expect(mockResponse.status).toHaveBeenCalledWith(404);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 404,
+      message: 'User not found',
+    });
+  });
 });
