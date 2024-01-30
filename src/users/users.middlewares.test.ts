@@ -169,7 +169,8 @@ describe('signUpInputsValidations', () => {
 describe('signUpVerificationByEmail', () => {
   it('Should pass signup verification by email', async () => {
     mockRequest.body = {
-      email: 'fernandolorcaa@gmail.com',
+      // Always do with new email
+      email: 'fernandolorcaaa@gmail.com',
     };
 
     await userMiddlewares.signUpVerificationByEmail(
