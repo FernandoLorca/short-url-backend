@@ -122,13 +122,14 @@ const signUpVerificationByEmail = async (
 
     next();
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json({
-        ok: false,
-        status: 500,
-        message: `Internal server error: ${error}`,
-      });
-    }
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      message: `Internal server error: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+    });
   }
 };
 
@@ -200,13 +201,14 @@ const signInVerificationByEmail = async (
 
     next();
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).json({
-        ok: false,
-        status: 500,
-        message: `Internal server error: ${error}`,
-      });
-    }
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      message: `Internal server error: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+    });
   }
 };
 
