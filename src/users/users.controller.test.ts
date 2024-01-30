@@ -23,47 +23,47 @@ describe('createUser', () => {
     jest.spyOn(console, 'error').mockRestore();
   });
 
-  // it('Should create a new user', async () => {
-  //   mockRequest.body = {
-  //     username: 'Roberto Lara',
-  //     // Must be a new email, always
-  //     email: 'correo13@gmail.com',
-  //     password: 'password',
-  //   };
+  it('Should create a new user', async () => {
+    mockRequest.body = {
+      username: 'Roberto Lara',
+      // Must be a new email, always
+      email: 'correo13@gmail.com',
+      password: 'password',
+    };
 
-  //   await usersController.createUser(mockRequest, mockResponse);
+    await usersController.createUser(mockRequest, mockResponse);
 
-  //   expect(mockResponse.status).toHaveBeenCalledWith(201);
-  //   expect(mockResponse.json).toHaveBeenCalledWith({
-  //     ok: true,
-  //     status: 201,
-  //     message: 'User created',
-  //     user: {
-  //       id: expect.any(Number),
-  //       username: 'Roberto Lara',
-  //       // Must match the mockRequest.body email value
-  //       email: 'correo13@gmail.com',
-  //       token: 'generateToken',
-  //     },
-  //   });
-  // });
+    expect(mockResponse.status).toHaveBeenCalledWith(201);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: true,
+      status: 201,
+      message: 'User created',
+      user: {
+        id: expect.any(Number),
+        username: 'Roberto Lara',
+        // Must match the mockRequest.body email value
+        email: 'correo13@gmail.com',
+        token: 'generateToken',
+      },
+    });
+  });
 
-  // it('Should return an error if the email is already in use', async () => {
-  //   mockRequest.body = {
-  //     username: 'Roberto Lara',
-  //     email: 'correo1@gmail.com',
-  //     password: 'password',
-  //   };
+  it('Should return an error if the email is already in use', async () => {
+    mockRequest.body = {
+      username: 'Roberto Lara',
+      email: 'correo1@gmail.com',
+      password: 'password',
+    };
 
-  //   await usersController.createUser(mockRequest, mockResponse);
+    await usersController.createUser(mockRequest, mockResponse);
 
-  //   expect(mockResponse.status).toHaveBeenCalledWith(500);
-  //   expect(mockResponse.json).toHaveBeenCalledWith({
-  //     ok: false,
-  //     status: 500,
-  //     message: 'Internal server error: Validation error',
-  //   });
-  // });
+    expect(mockResponse.status).toHaveBeenCalledWith(500);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 500,
+      message: 'Internal server error: Validation error',
+    });
+  });
 
   it('Should return an error if inputs are missing', async () => {
     mockRequest.body = {
