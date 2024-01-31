@@ -3,6 +3,10 @@ import { urlsMiddlewares } from './urls.middlewares';
 
 const urlsRouter = Router();
 
-urlsRouter.post('/shorten', urlsMiddlewares.verifyToken);
+urlsRouter.post(
+  '/shorten',
+  urlsMiddlewares.verifyTokenExpiration,
+  urlsMiddlewares.refreshToken
+);
 
 export default urlsRouter;
