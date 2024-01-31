@@ -20,11 +20,7 @@ declare module 'express-serve-static-core' {
   }
 }
 
-const verifyTokenExpiration = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   const bearerHeader = req.headers.authorization;
 
   if (!bearerHeader) {
@@ -135,6 +131,6 @@ const refreshToken = async (
 };
 
 export const urlsMiddlewares = {
-  verifyTokenExpiration,
+  verifyToken,
   refreshToken,
 };
