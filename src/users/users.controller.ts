@@ -81,12 +81,28 @@ const getUser = async (
       return;
     }
 
+    const generateToken: string = jwt.sign(
+      {
+        id: user.id,
+        email: user.email,
+      },
+      process.env.JWT_SECRET as Secret,
+      {
+        expiresIn: '24h',
+      }
+    );
+
     res.status(200).json({
       ok: true,
       status: 200,
       message: 'User found',
       data: {
-        user,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+          token: generateToken,
+        },
       },
     });
   } catch (error) {
