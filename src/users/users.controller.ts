@@ -32,7 +32,7 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
       },
       process.env.JWT_SECRET as Secret,
       {
-        expiresIn: '24h',
+        expiresIn: 1,
       }
     );
 
