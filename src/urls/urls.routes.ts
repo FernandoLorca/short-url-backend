@@ -5,7 +5,7 @@ const urlsRouter = Router();
 
 urlsRouter.post(
   '/shorten',
-  urlsMiddlewares.verifyTokenExpiration,
+  urlsMiddlewares.verifyToken,
   urlsMiddlewares.refreshToken
 );
 
