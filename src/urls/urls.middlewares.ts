@@ -63,9 +63,9 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      return res.status(401).json({
+      return res.status(500).json({
         ok: false,
-        status: 401,
+        status: 500,
         message: `Internal server error: ${error.message}`,
       });
     }
@@ -120,9 +120,9 @@ const refreshToken = async (
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      res.status(401).json({
+      res.status(500).json({
         ok: false,
-        status: 401,
+        status: 500,
         message: `Internal server error: ${error.message}`,
       });
       return;
