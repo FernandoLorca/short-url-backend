@@ -52,11 +52,37 @@ describe('verifyToken', () => {
     });
   });
 
-  // it('Should return 500 Internal error for token malformed', () => {
-  //   mockRequest.headers.authorization =
-  //     'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94';
-  // });
+  it('Should return 500 Internal error for invalid token', () => {
+    mockRequest.headers.authorization =
+      'Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94I';
 
-  // urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
-  // expect(mockResponse.status).toHaveBeenCalledWith(500)
+    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    expect(mockResponse.status).toHaveBeenCalledWith(500);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 500,
+      message: 'Internal server error: invalid token',
+    });
+  });
+
+  it('Should return 500 Internal error for invalid signature', () => {
+    mockRequest.headers.authorization =
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94';
+
+    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    expect(mockResponse.status).toHaveBeenCalledWith(500);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 500,
+      message: 'Internal server error: invalid signature',
+    });
+  });
+
+  it('Should pass with valid token', () => {
+    mockRequest.headers.authorization =
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94I';
+
+    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    expect(mockNextFn).toHaveBeenCalled();
+  });
 });
