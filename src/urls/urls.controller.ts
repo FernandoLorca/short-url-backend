@@ -4,6 +4,7 @@ import { Urls } from './urls.model';
 const storageUrlDatabase = async (req: Request, res: Response) => {
   const userId = req.user?.id;
   const urls = req.urls;
+  const customLink = req.body.customLink;
 
   try {
     const storageDatabase = await Urls.create({
@@ -11,6 +12,7 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
       short: `${process.env.DOMAIN}${urls?.shortLink}`,
       hash: urls?.hash,
       userId,
+      customLink,
     });
 
     res.status(201).json({
