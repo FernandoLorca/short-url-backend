@@ -1,4 +1,5 @@
 import { Optional, Model } from 'sequelize';
+import { JwtPayload } from 'jsonwebtoken';
 
 interface UrlsAttributes {
   id: number;
