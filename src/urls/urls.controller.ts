@@ -41,6 +41,14 @@ const updateCustomLink = async (req: Request, res: Response) => {
   const id = req.user?.id;
   const { urlLinkToUpdate, customLink } = req.body;
 
+  if (!customLink) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Custom link must have a value',
+    });
+  }
+
   try {
     const linkToUpdate = await Urls.findOne({
       where: {
