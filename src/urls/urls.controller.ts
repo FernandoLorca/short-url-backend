@@ -37,6 +37,18 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
   }
 };
 
+const updateCustomLink = async (req: Request, res: Response) => {
+  const id = req.user?.id;
+
+  const urls = await Urls.findAll({
+    where: {
+      userId: id,
+    },
+  });
+  console.log(urls);
+};
+
 export const urlsController = {
   storageUrlDatabase,
+  updateCustomLink,
 };

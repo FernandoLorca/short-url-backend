@@ -12,5 +12,11 @@ urlsRouter.post(
   urlsMiddlewares.hashUrl,
   urlsController.storageUrlDatabase
 );
+urlsRouter.post(
+  '/update',
+  urlsMiddlewares.verifyToken,
+  urlsMiddlewares.refreshToken,
+  urlsController.updateCustomLink
+);
 
 export default urlsRouter;
