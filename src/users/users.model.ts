@@ -1,6 +1,5 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../database/connection';
-import { Urls } from '../urls/urls.model';
 import { UserInstance } from './types';
 
 export const User = sequelize.define<UserInstance>('user', {
@@ -22,20 +21,4 @@ export const User = sequelize.define<UserInstance>('user', {
     allowNull: false,
     unique: true,
   },
-});
-
-User.hasMany(Urls, {
-  foreignKey: {
-    name: 'userId',
-    allowNull: false,
-  },
-  sourceKey: 'id',
-});
-
-Urls.belongsTo(User, {
-  foreignKey: {
-    name: 'userId',
-    allowNull: false,
-  },
-  targetKey: 'id',
 });
