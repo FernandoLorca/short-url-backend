@@ -6,6 +6,7 @@ interface UrlsAttributes {
   short: string;
   hash: string;
   customLink: string;
+  userId: number;
 }
 
 interface UserCreationAttributes extends Optional<UrlsAttributes, 'id'> {}

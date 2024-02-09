@@ -25,6 +25,10 @@ export const Urls = sequelize.define<UrlsInstance>('urls', {
     type: DataTypes.STRING(),
     allowNull: true,
   },
+  userId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
 });
 
 User.hasMany(Urls, {
