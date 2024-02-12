@@ -301,7 +301,6 @@ const refreshToken = async (
       });
       return;
     }
-    console.log(user);
     const refreshToken = jwt.sign(
       {
         id: user.id,
