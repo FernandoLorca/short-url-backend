@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
 import { Urls } from './urls.model';
+import { User } from '../users/users.model';
+import { url } from 'inspector';
 
 const storageUrlDatabase = async (req: Request, res: Response) => {
   const userId = req.user?.id;
@@ -216,6 +218,21 @@ const deleteLink = async (req: Request, res: Response) => {
       return;
     }
 
+    const user = await User.findOne({
+      where: {
+        id: req.user?.id,
+      },
+    });
+
+    if (user?.dataValues.id !== urlToRemove.dataValues.userId) {
+      res.status(403).json({
+        ok: false,
+        status: 403,
+        message: 'Forbidden to remove this url',
+      });
+      return;
+    }
+
     const deleteUrl = await Urls.destroy({
       where: {
         id,
@@ -235,12 +252,12 @@ const deleteLink = async (req: Request, res: Response) => {
       ok: true,
       status: 200,
       message: 'Url remove successfully',
+      user: req.user,
       urlDeleted: {
         id: urlToRemove.dataValues.id,
         originalLink: urlToRemove.dataValues.original,
         link: `${process.env.DOMAIN}${urlToRemove.dataValues.customLink}`,
       },
-      user: req.user,
     });
   } catch (error) {
     console.error(error);
