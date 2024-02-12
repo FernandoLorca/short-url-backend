@@ -112,6 +112,12 @@ const updateCustomLink = async (req: Request, res: Response) => {
     res.status(201).json({
       ok: true,
       status: 201,
+      user: {
+        id: req.user?.id,
+        username: req.user?.username,
+        email: req.user?.email,
+        token: req.user?.refreshToken,
+      },
       data: {
         id: linkWithNewCustomLink?.dataValues.id,
         originalUrl: linkWithNewCustomLink?.dataValues.original,
