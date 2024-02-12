@@ -1,6 +1,16 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    urls?: {
+      url: string;
+      hash: string;
+      shortLink: string;
+    };
+  }
+}
+
 const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   const { url }: { url: string } = req.body;
 
@@ -60,11 +70,14 @@ const hashUrl = async (req: Request, _: Response, next: NextFunction) => {
   });
   const finalHash = replaceHashCharacter.join('');
 
-  req.urls = {
+  (req as Request).urls = {
     url,
     hash: hashUrl,
     shortLink: finalHash,
   };
+
+  console.log('req.url');
+  console.log(req.urls);
 
   next();
 };
