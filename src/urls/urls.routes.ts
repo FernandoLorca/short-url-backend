@@ -13,6 +13,12 @@ urlsRouter.post(
   urlsMiddlewares.hashUrl,
   urlsController.storageUrlDatabase
 );
+urlsRouter.get(
+  '/getLinks',
+  userMiddlewares.verifyToken,
+  userMiddlewares.refreshToken,
+  urlsController.getUserUrls
+);
 urlsRouter.post(
   '/update',
   userMiddlewares.verifyToken,

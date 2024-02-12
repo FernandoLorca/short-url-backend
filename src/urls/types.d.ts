@@ -8,6 +8,8 @@ interface UrlsAttributes {
   hash: string;
   customLink: string;
   userId: number;
+  createdAt: number;
+  updatedAt: number;
 }
 
 interface UserCreationAttributes extends Optional<UrlsAttributes, 'id'> {}

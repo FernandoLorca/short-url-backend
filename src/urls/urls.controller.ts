@@ -43,6 +43,59 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
   }
 };
 
+const getUserUrls = async (req: Request, res: Response) => {
+  const user = req.user;
+
+  try {
+    const userUrls = await Urls.findAll({
+      where: {
+        userId: user?.id,
+      },
+    });
+
+    if (userUrls.length === 0) {
+      res.status(404).json({
+        ok: false,
+        status: 404,
+        message: 'Found no link from this user.',
+      });
+      return;
+    }
+
+    const urlsFromUser = userUrls
+      .map(url => {
+        return {
+          id: url.dataValues.id,
+          short: url.dataValues.short,
+          customLink: url.dataValues.customLink,
+          createdAt: url.dataValues.createdAt,
+        };
+      })
+      .sort((a, b) => a.id - b.id);
+
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      user: {
+        id: req.user?.id,
+        username: req.user?.username,
+        email: req.user?.email,
+        token: req.user?.refreshToken,
+      },
+      urls: urlsFromUser,
+    });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error.message}`,
+      });
+    }
+  }
+};
+
 const updateCustomLink = async (req: Request, res: Response) => {
   const id = req.user?.id;
   const { urlLinkToUpdate, customLink } = req.body;
@@ -202,6 +255,7 @@ const deleteLink = async (req: Request, res: Response) => {
 
 export const urlsController = {
   storageUrlDatabase,
+  getUserUrls,
   updateCustomLink,
   deleteLink,
 };
