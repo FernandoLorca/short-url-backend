@@ -211,7 +211,6 @@ const signInVerificationByEmail = async (
 
     const passwordMatch = await bcryptjs.compare(password, user.password);
 
-    console.log(user);
     if (!passwordMatch) {
       res.status(400).json({
         ok: false,

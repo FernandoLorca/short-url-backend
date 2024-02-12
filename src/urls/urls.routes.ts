@@ -15,8 +15,8 @@ urlsRouter.post(
 );
 urlsRouter.post(
   '/update',
-  urlsMiddlewares.verifyToken,
-  urlsMiddlewares.refreshToken,
+  userMiddlewares.verifyToken,
+  userMiddlewares.refreshToken,
   urlsController.updateCustomLink
 );
 
