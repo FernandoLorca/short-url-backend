@@ -143,7 +143,65 @@ const updateCustomLink = async (req: Request, res: Response) => {
   }
 };
 
+const deleteLink = async (req: Request, res: Response) => {
+  const { id }: { id: number } = req.body;
+
+  try {
+    const urlToRemove = await Urls.findOne({
+      where: {
+        id,
+      },
+    });
+
+    if (!urlToRemove) {
+      res.status(404).json({
+        ok: false,
+        status: 404,
+        message: "Url doesn't exist",
+      });
+      return;
+    }
+
+    const deleteUrl = await Urls.destroy({
+      where: {
+        id,
+      },
+    });
+
+    if (deleteUrl !== 1) {
+      res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'It is not possible to delete the url',
+      });
+      return;
+    }
+
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      message: 'Url remove successfully',
+      urlDeleted: {
+        id: urlToRemove.dataValues.id,
+        originalLink: urlToRemove.dataValues.original,
+        link: `${process.env.DOMAIN}${urlToRemove.dataValues.customLink}`,
+      },
+      user: req.user,
+    });
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error.message}`,
+      });
+    }
+  }
+};
+
 export const urlsController = {
   storageUrlDatabase,
   updateCustomLink,
+  deleteLink,
 };

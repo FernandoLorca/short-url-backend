@@ -76,9 +76,6 @@ const hashUrl = async (req: Request, _: Response, next: NextFunction) => {
     shortLink: finalHash,
   };
 
-  console.log('req.url');
-  console.log(req.urls);
-
   next();
 };
 

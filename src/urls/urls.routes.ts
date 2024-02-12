@@ -14,15 +14,16 @@ urlsRouter.post(
   urlsController.storageUrlDatabase
 );
 urlsRouter.post(
-  '/shorten/update',
+  '/update',
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsController.updateCustomLink
 );
 urlsRouter.post(
-  '/shorten/delete',
+  '/delete',
   userMiddlewares.verifyToken,
-  userMiddlewares.refreshToken
+  userMiddlewares.refreshToken,
+  urlsController.deleteLink
 );
 
 export default urlsRouter;
