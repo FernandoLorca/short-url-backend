@@ -238,6 +238,16 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const token = bearerHeader.split(' ')[1];
+
+    if (token === undefined) {
+      res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'Jwt must be provided',
+      });
+      return;
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET as Secret, {
       ignoreExpiration: true,
     }) as JwtPayload;
