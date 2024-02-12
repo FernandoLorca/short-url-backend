@@ -19,5 +19,10 @@ urlsRouter.post(
   userMiddlewares.refreshToken,
   urlsController.updateCustomLink
 );
+urlsRouter.post(
+  '/shorten/delete',
+  userMiddlewares.verifyToken,
+  userMiddlewares.refreshToken
+);
 
 export default urlsRouter;
