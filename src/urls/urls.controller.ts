@@ -66,6 +66,7 @@ const getUserUrls = async (req: Request, res: Response) => {
       .map(url => {
         return {
           id: url.dataValues.id,
+          original: url.dataValues.original,
           short: url.dataValues.short,
           customLink: url.dataValues.customLink,
           createdAt: url.dataValues.createdAt,
@@ -119,7 +120,7 @@ const updateCustomLink = async (req: Request, res: Response) => {
       res.status(404).json({
         ok: false,
         status: 404,
-        message: "Link dosn't exist",
+        message: "Link doesn't exist",
       });
       return;
     }
