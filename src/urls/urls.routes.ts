@@ -14,7 +14,7 @@ urlsRouter.post(
   urlsController.storageUrlDatabase
 );
 urlsRouter.post(
-  'shorten/update',
+  '/shorten/update',
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsController.updateCustomLink
