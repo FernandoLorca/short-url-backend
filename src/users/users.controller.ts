@@ -64,7 +64,8 @@ const getUser = async (
   res: Response
 ): Promise<void> => {
   try {
-    const reqUser = req.user?.user.dataValues;
+    const reqUser = req.user;
+
     const user = await User.findOne({
       where: {
         email: reqUser?.email,
@@ -96,13 +97,11 @@ const getUser = async (
       ok: true,
       status: 200,
       message: 'User found',
-      data: {
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          token: generateToken,
-        },
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        token: generateToken,
       },
     });
   } catch (error) {
