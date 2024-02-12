@@ -5,15 +5,6 @@ import { User } from './users.model';
 import { userUtilities } from './users.utilities';
 import type { SignInRequestBody, SignUpRequestBody } from './types';
 
-interface CustomRequest extends Request {
-  user?: {
-    id: number;
-    email: string;
-    username: string;
-    token: string;
-  };
-}
-
 interface TokenInfo {
   decoded: JwtPayload;
   token: string;
@@ -27,14 +18,8 @@ declare module 'express-serve-static-core' {
       id: number;
       email: string;
       username: string;
+      password?: string;
       refreshToken?: string;
-    };
-  }
-  interface Request {
-    urls?: {
-      url: string;
-      hash: string;
-      shortLink: string;
     };
   }
 }
@@ -208,7 +193,6 @@ const signInVerificationByEmail = async (
       });
       return;
     }
-
     const passwordMatch = await bcryptjs.compare(password, user.password);
 
     if (!passwordMatch) {
@@ -220,8 +204,11 @@ const signInVerificationByEmail = async (
       return;
     }
 
-    (req as any).user = {
-      user,
+    (req as Request).user = {
+      id: user.dataValues.id,
+      email: user.dataValues.email,
+      username: user.dataValues.username,
+      password: user.dataValues.password,
     };
 
     next();
@@ -314,7 +301,7 @@ const refreshToken = async (
       });
       return;
     }
-
+    console.log(user);
     const refreshToken = jwt.sign(
       {
         id: user.id,
@@ -326,7 +313,7 @@ const refreshToken = async (
       }
     );
 
-    req.user = {
+    (req as Request).user = {
       id: user.id,
       email: user.email,
       username: user.username,
