@@ -11,6 +11,38 @@ declare module 'express-serve-static-core' {
   }
 }
 
+const JSONValidation = (req: Request, res: Response, next: NextFunction) => {
+  const bodyKeys = Object.keys(req.body);
+
+  const JSONValidator = (reqBody: string[]): boolean => {
+    if (
+      (reqBody.length === 1 && reqBody.includes('url')) ||
+      (reqBody.length === 1 && reqBody.includes('id')) ||
+      (reqBody.length === 2 &&
+        reqBody.includes('url') &&
+        reqBody.includes('customLink')) ||
+      (reqBody.length === 2 &&
+        reqBody.includes('urlLinkToUpdate') &&
+        reqBody.includes('customLink'))
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  if (!JSONValidator(bodyKeys)) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Invalid JSON',
+    });
+    return;
+  }
+
+  next();
+};
+
 const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   const { url }: { url: string } = req.body;
 
@@ -80,6 +112,7 @@ const hashUrl = async (req: Request, _: Response, next: NextFunction) => {
 };
 
 export const urlsMiddlewares = {
+  JSONValidation,
   urlsValidation,
   hashUrl,
 };

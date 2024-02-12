@@ -7,6 +7,7 @@ const urlsRouter = Router();
 
 urlsRouter.post(
   '/shorten',
+  urlsMiddlewares.JSONValidation,
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsMiddlewares.urlsValidation,
@@ -21,12 +22,14 @@ urlsRouter.get(
 );
 urlsRouter.post(
   '/update',
+  urlsMiddlewares.JSONValidation,
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsController.updateCustomLink
 );
 urlsRouter.post(
   '/delete',
+  urlsMiddlewares.JSONValidation,
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsController.deleteLink
