@@ -29,14 +29,10 @@ export interface UsersInstance
     UsersAttributes {}
 
 interface RequestUser {
-  user: {
-    dataValues: {
-      id: number;
-      username: string;
-      password: string;
-      email: string;
-    };
-  };
+  id: number;
+  username: string;
+  password?: string;
+  email: string;
 }
 
 export interface AuthenticatedRequest extends Request {
