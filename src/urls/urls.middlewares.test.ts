@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import { Request, Response, NextFunction } from 'express';
-import { urlsMiddlewares } from './urls.middlewares';
+import { userMiddlewares } from '../users/users.middlewares';
 
 interface CustomRequest extends Request {
   headers: {
@@ -51,7 +51,7 @@ describe('verifyToken', () => {
   it("should return 401 if token dosen't exist", () => {
     mockRequest.headers.authorization = '';
 
-    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    userMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
     expect(mockResponse.status).toHaveBeenCalledWith(401);
     expect(mockResponse.json).toHaveBeenCalledWith({
       ok: false,
@@ -64,7 +64,7 @@ describe('verifyToken', () => {
     mockRequest.headers.authorization =
       'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94I';
 
-    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    userMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
     expect(mockResponse.status).toHaveBeenCalledWith(401);
     expect(mockResponse.json).toHaveBeenCalledWith({
       ok: false,
@@ -77,7 +77,7 @@ describe('verifyToken', () => {
     mockRequest.headers.authorization =
       'Bearer yJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94I';
 
-    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    userMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
     expect(mockResponse.status).toHaveBeenCalledWith(500);
     expect(mockResponse.json).toHaveBeenCalledWith({
       ok: false,
@@ -90,7 +90,7 @@ describe('verifyToken', () => {
     mockRequest.headers.authorization =
       'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94';
 
-    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    userMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
     expect(mockResponse.status).toHaveBeenCalledWith(500);
     expect(mockResponse.json).toHaveBeenCalledWith({
       ok: false,
@@ -103,7 +103,7 @@ describe('verifyToken', () => {
     mockRequest.headers.authorization =
       'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDY3Mjc2NjAsImV4cCI6MTcwNjgxNDA2MH0.jumm1djyRvE4sLkg33zFTQB51DoHTV4-2KUzdaav94I';
 
-    urlsMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
+    userMiddlewares.verifyToken(mockRequest, mockResponse, mockNextFn);
     expect(mockNextFn).toHaveBeenCalled();
   });
 });
@@ -120,7 +120,7 @@ describe('refreshToken', () => {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDcyMjEzOTgsImV4cCI6MTcwNzMwNzc5OH0.QULNBpRHC6S43CYMx3Wqwf-REayx1AkLWS7-00B1Rls';
     mockTokenRequest.token.tokenExpired = false;
 
-    await urlsMiddlewares.refreshToken(
+    await userMiddlewares.refreshToken(
       mockTokenRequest,
       mockResponse,
       mockNextFn
@@ -144,7 +144,7 @@ describe('refreshToken', () => {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTEsImVtYWlsIjoiZmVybmFuZG9sb3JjYUBnbWFpbC5jb20iLCJpYXQiOjE3MDcyMjEzOTgsImV4cCI6MTcwNzMwNzc5OH0.QULNBpRHC6S43CYMx3Wqwf-REayx1AkLWS7-00B1Rls';
     mockTokenRequest.token.tokenExpired = false;
 
-    await urlsMiddlewares.refreshToken(
+    await userMiddlewares.refreshToken(
       mockTokenRequest,
       mockResponse,
       mockNextFn
