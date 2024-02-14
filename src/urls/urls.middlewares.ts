@@ -13,17 +13,29 @@ declare module 'express-serve-static-core' {
 
 const JSONValidation = (req: Request, res: Response, next: NextFunction) => {
   const bodyKeys = Object.keys(req.body);
+  const bodyValues = Object.values(req.body);
 
-  const JSONValidator = (reqBody: string[]): boolean => {
+  const JSONValidator = (
+    bodyKeys: string[],
+    bodyValues: unknown[] | string[] | number[]
+  ): boolean => {
     if (
-      (reqBody.length === 1 && reqBody.includes('url')) ||
-      (reqBody.length === 1 && reqBody.includes('id')) ||
-      (reqBody.length === 2 &&
-        reqBody.includes('url') &&
-        reqBody.includes('customLink')) ||
-      (reqBody.length === 2 &&
-        reqBody.includes('urlLinkToUpdate') &&
-        reqBody.includes('customLink'))
+      (bodyKeys.length === 1 &&
+        bodyKeys.includes('url') &&
+        typeof bodyValues[0] === 'string') ||
+      (bodyKeys.length === 1 &&
+        bodyKeys.includes('id') &&
+        typeof bodyValues[0] === 'number') ||
+      (bodyKeys.length === 2 &&
+        bodyKeys.includes('url') &&
+        typeof bodyValues[0] === 'string' &&
+        bodyKeys.includes('customLink') &&
+        typeof bodyValues[1] === 'string') ||
+      (bodyKeys.length === 2 &&
+        bodyKeys.includes('urlLinkToUpdate') &&
+        typeof bodyValues[0] === 'string' &&
+        bodyKeys.includes('customLink') &&
+        typeof bodyValues[1] === 'string')
     ) {
       return true;
     }
@@ -31,7 +43,7 @@ const JSONValidation = (req: Request, res: Response, next: NextFunction) => {
     return false;
   };
 
-  if (!JSONValidator(bodyKeys)) {
+  if (!JSONValidator(bodyKeys, bodyValues)) {
     res.status(400).json({
       ok: false,
       status: 400,
@@ -47,10 +59,31 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   const { url }: { url: string } = req.body;
 
   if (!url) {
-    res.status(404).json({
+    res.status(400).json({
       ok: false,
-      status: 404,
+      status: 400,
       message: "Urls dosn't exist",
+    });
+    return;
+  }
+
+  const urlRegex = /^(http:\/\/|https:\/\/)/;
+  const validateURL = (url: string) => urlRegex.test(url);
+
+  if (!validateURL(url)) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Invalid URL',
+    });
+    return;
+  }
+
+  if (!url.endsWith('/')) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: "End of URL must have a '/'",
     });
     return;
   }
