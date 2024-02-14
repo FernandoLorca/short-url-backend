@@ -183,105 +183,78 @@ describe('JSONValidation', () => {
   });
 });
 
-// describe('signUpInputsValidations', () => {
-//   it('Should pass signup inputs validation', () => {
-//     mockRequest.body = {
-//       username: 'Fernando Lorca',
-//       email: 'fernandolorca@gmail.com',
-//       password: 'password',
-//       repeatPassword: 'password',
-//     };
+describe('urlsValidation', () => {
+  it('Should pass urlsValidation with correct https: protocol', () => {
+    mockRequest.body = {
+      url: 'https://google.com/',
+    };
 
-//     userMiddlewares.signUpInputsValidations(
-//       mockRequest,
-//       mockResponse,
-//       mockNextFn
-//     );
-//     expect(mockNextFn).toHaveBeenCalled();
-//   });
+    urlsMiddlewares.urlsValidation(mockRequest, mockResponse, mockNextFn);
+    expect(mockNextFn).toHaveBeenCalled();
+  });
 
-//   it('Should return 400 for missing fields', () => {
-//     mockRequest.body = {
-//       username: 'Fernando Lorca',
-//       email: 'fernandolorca@gmail.com',
-//       password: 'password',
-//     };
+  it('Should pass urlsValidation with correct https: protocol', () => {
+    mockRequest.body = {
+      url: 'http://google.com/',
+    };
 
-//     userMiddlewares.signUpInputsValidations(
-//       mockRequest,
-//       mockResponse,
-//       mockNextFn
-//     );
+    urlsMiddlewares.urlsValidation(mockRequest, mockResponse, mockNextFn);
+    expect(mockNextFn).toHaveBeenCalled();
+  });
 
-//     expect(mockResponse.status).toHaveBeenCalledWith(400);
-//     expect(mockResponse.json).toHaveBeenCalledWith({
-//       ok: false,
-//       status: 400,
-//       message: 'All fields are required',
-//     });
-//   });
+  it('Should return 400 for not passing an url', () => {
+    mockRequest.body = {
+      url: '',
+    };
 
-//   it('Should return 400 for invalid email format', () => {
-//     mockRequest.body = {
-//       username: 'Fernando Lorca',
-//       email: 'fernandolorcagmail.commm',
-//       password: 'password',
-//       repeatPassword: 'password',
-//     };
+    urlsMiddlewares.urlsValidation(mockRequest, mockResponse, mockNextFn);
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 400,
+      message: "Urls dosn't exist",
+    });
+  });
 
-//     userMiddlewares.signUpInputsValidations(
-//       mockRequest,
-//       mockResponse,
-//       mockNextFn
-//     );
-//     expect(mockResponse.status).toHaveBeenCalledWith(400);
-//     expect(mockResponse.json).toHaveBeenCalledWith({
-//       ok: false,
-//       status: 400,
-//       message: 'Invalid email',
-//     });
-//   });
+  it('Should return 400 for bad https: or http: protocol validator', () => {
+    mockRequest.body = {
+      url: 'httpss://google.com/',
+    };
 
-//   it('Should return 400 for invalid password format', () => {
-//     mockRequest.body = {
-//       username: 'Fernando Lorca',
-//       email: 'fernandolorca@gmail.com',
-//       password: 'pass',
-//       repeatPassword: 'pass',
-//     };
+    urlsMiddlewares.urlsValidation(mockRequest, mockResponse, mockNextFn);
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 400,
+      message: 'Invalid URL',
+    });
+  });
 
-//     userMiddlewares.signUpInputsValidations(
-//       mockRequest,
-//       mockResponse,
-//       mockNextFn
-//     );
-//     expect(mockResponse.status).toHaveBeenCalledWith(400);
-//     expect(mockResponse.json).toHaveBeenCalledWith({
-//       ok: false,
-//       status: 400,
-//       message: 'Password must be between 6 and 24 characters',
-//     });
-//   });
+  it('Should return 400 for invalid URL', () => {
+    mockRequest.body = {
+      url: 'google.com/',
+    };
 
-//   it('Should return 400 for passwords do not match', () => {
-//     mockRequest.body = {
-//       username: 'Fernando Lorca',
-//       email: 'fernandolorca@gmail.com',
-//       password: 'password',
-//       repeatPassword: 'passwordd',
-//     };
+    urlsMiddlewares.urlsValidation(mockRequest, mockResponse, mockNextFn);
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 400,
+      message: 'Invalid URL',
+    });
+  });
 
-//     userMiddlewares.signUpInputsValidations(
-//       mockRequest,
-//       mockResponse,
-//       mockNextFn
-//     );
+  it("Should return 400 for missing '/'", () => {
+    mockRequest.body = {
+      url: 'https://google.com',
+    };
 
-//     expect(mockResponse.status).toHaveBeenCalledWith(400);
-//     expect(mockResponse.json).toHaveBeenCalledWith({
-//       ok: false,
-//       status: 400,
-//       message: 'Passwords do not match',
-//     });
-//   });
-// });
+    urlsMiddlewares.urlsValidation(mockRequest, mockResponse, mockNextFn);
+    expect(mockResponse.status).toHaveBeenCalledWith(400);
+    expect(mockResponse.json).toHaveBeenCalledWith({
+      ok: false,
+      status: 400,
+      message: "End of URL must have a '/'",
+    });
+  });
+});

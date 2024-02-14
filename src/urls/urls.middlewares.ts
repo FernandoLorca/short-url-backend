@@ -57,10 +57,20 @@ const JSONValidation = (req: Request, res: Response, next: NextFunction) => {
 
 const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   const { url }: { url: string } = req.body;
+
+  if (!url) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: "Urls dosn't exist",
+    });
+    return;
+  }
+
   const urlRegex = /^(http:\/\/|https:\/\/)/;
   const validateURL = (url: string) => urlRegex.test(url);
 
-  if (!validateURL) {
+  if (!validateURL(url)) {
     res.status(400).json({
       ok: false,
       status: 400,
@@ -69,11 +79,11 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  if (!url) {
-    res.status(404).json({
+  if (!url.endsWith('/')) {
+    res.status(400).json({
       ok: false,
-      status: 404,
-      message: "Urls dosn't exist",
+      status: 400,
+      message: "End of URL must have a '/'",
     });
     return;
   }
