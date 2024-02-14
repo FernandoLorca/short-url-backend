@@ -57,6 +57,17 @@ const JSONValidation = (req: Request, res: Response, next: NextFunction) => {
 
 const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   const { url }: { url: string } = req.body;
+  const urlRegex = /^(http:\/\/|https:\/\/)/;
+  const validateURL = (url: string) => urlRegex.test(url);
+
+  if (!validateURL) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Invalid URL',
+    });
+    return;
+  }
 
   if (!url) {
     res.status(404).json({
