@@ -113,35 +113,47 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const hashUrl = async (req: Request, _: Response, next: NextFunction) => {
+const hashUrl = async (req: Request, res: Response, next: NextFunction) => {
   const url: string = req.body.url;
   const characterLimit = 20;
-  const hashUrl = await bcrypt.hash(url, 5);
-  const shortHashUrl = hashUrl.slice(10, characterLimit);
 
-  const letterGenerator = () => {
-    const genNum = Math.floor(Math.random() * 26);
-    const offset = Math.random() < 0.5 ? 65 : 97;
+  try {
+    const hashUrl = await bcrypt.hash(url, 5);
+    const shortHashUrl = hashUrl.slice(10, characterLimit);
 
-    return String.fromCharCode(genNum + offset);
-  };
+    const letterGenerator = () => {
+      const genNum = Math.floor(Math.random() * 26);
+      const offset = Math.random() < 0.5 ? 65 : 97;
 
-  const replaceHashCharacter = shortHashUrl.split('').map(character => {
-    if (character !== '.' && character !== '/') {
-      return character;
-    } else {
-      return letterGenerator();
+      return String.fromCharCode(genNum + offset);
+    };
+
+    const replaceHashCharacter = shortHashUrl.split('').map(character => {
+      if (character !== '.' && character !== '/') {
+        return character;
+      } else {
+        return letterGenerator();
+      }
+    });
+    const finalHash = replaceHashCharacter.join('');
+
+    (req as Request).urls = {
+      url,
+      hash: hashUrl,
+      shortLink: finalHash,
+    };
+
+    next();
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error.message}`,
+      });
     }
-  });
-  const finalHash = replaceHashCharacter.join('');
-
-  (req as Request).urls = {
-    url,
-    hash: hashUrl,
-    shortLink: finalHash,
-  };
-
-  next();
+  }
 };
 
 export const urlsMiddlewares = {
