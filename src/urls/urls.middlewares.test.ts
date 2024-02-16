@@ -258,3 +258,14 @@ describe('urlsValidation', () => {
     });
   });
 });
+
+describe('hashUrl', () => {
+  it('Should hash an url and pass with next fn', async () => {
+    mockRequest.body = {
+      url: 'https://google.com/',
+    };
+
+    await urlsMiddlewares.hashUrl(mockRequest, mockResponse, mockNextFn);
+    expect(mockNextFn).toHaveBeenCalled();
+  });
+});
