@@ -3,17 +3,17 @@ import { JwtPayload } from 'jsonwebtoken';
 
 interface UrlsAttributes {
   id: number;
-  original: string;
+  original: string | null;
   short: string;
-  hash: string;
+  hash: string | null;
   customLink: string;
-  userId: number;
-  createdAt: number;
-  updatedAt: number;
+  userId: number | null;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-interface UserCreationAttributes extends Optional<UrlsAttributes, 'id'> {}
+interface UrlsCreationAttributes extends Optional<UrlsAttributes, 'id'> {}
 
 export interface UrlsInstance
   extends Model<UrlsAttributes, UrlsCreationAttributes>,
-    UserAttributes {}
+    UrlsAttributes {}
