@@ -14,6 +14,8 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
       hash: urls?.hash,
       userId,
       customLink,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     });
 
     res.status(201).json({
