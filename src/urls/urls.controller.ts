@@ -102,12 +102,12 @@ const getUserUrls = async (req: Request, res: Response) => {
 
 const updateCustomLink = async (req: Request, res: Response) => {
   const id = req.user?.id;
-  const { urlLinkToUpdate, customLink } = req.body;
+  const { urlId, customLink } = req.body;
 
   try {
     const linkToUpdate = await Urls.findOne({
       where: {
-        original: urlLinkToUpdate,
+        id: urlId,
       },
     });
 
@@ -144,7 +144,7 @@ const updateCustomLink = async (req: Request, res: Response) => {
       },
       {
         where: {
-          customLink: linkToUpdate.dataValues.customLink,
+          id: linkToUpdate.dataValues.id,
         },
       }
     );
@@ -160,7 +160,7 @@ const updateCustomLink = async (req: Request, res: Response) => {
 
     const linkWithNewCustomLink = await Urls.findOne({
       where: {
-        original: urlLinkToUpdate,
+        id: urlId,
       },
     });
 

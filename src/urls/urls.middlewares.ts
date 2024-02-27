@@ -32,8 +32,8 @@ const JSONValidation = (req: Request, res: Response, next: NextFunction) => {
         bodyKeys.includes('customLink') &&
         typeof bodyValues[1] === 'string') ||
       (bodyKeys.length === 2 &&
-        bodyKeys.includes('urlLinkToUpdate') &&
-        typeof bodyValues[0] === 'string' &&
+        bodyKeys.includes('urlId') &&
+        typeof bodyValues[0] === 'number' &&
         bodyKeys.includes('customLink') &&
         typeof bodyValues[1] === 'string')
     ) {
