@@ -15,5 +15,5 @@ export const options = {
       },
     ],
   },
-  apis: ['./src/users/users.routes.ts'],
+  apis: ['./src/**/*.ts'],
 };

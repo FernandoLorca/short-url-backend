@@ -41,6 +41,13 @@ const usersRouter = Router();
  *  description: The users managing API
  */
 
+usersRouter.post(
+  '/signin',
+  userMiddlewares.JSONValidation,
+  userMiddlewares.signInInputsValidations,
+  userMiddlewares.signInVerificationByEmail,
+  usersController.getUser
+);
 /**
  * @swagger
  * /api/v1/user/signin:
@@ -116,13 +123,6 @@ const usersRouter = Router();
  *    500:
  *      description: Internal server error
  */
-usersRouter.post(
-  '/signin',
-  userMiddlewares.JSONValidation,
-  userMiddlewares.signInInputsValidations,
-  userMiddlewares.signInVerificationByEmail,
-  usersController.getUser
-);
 
 usersRouter.post(
   '/signup',
@@ -131,5 +131,82 @@ usersRouter.post(
   userMiddlewares.signUpVerificationByEmail,
   usersController.createUser
 );
+/**
+ * @swagger
+ * /api/v1/user/signup:
+ *  post:
+ *    summary: Sign up user
+ *    tags: [Users]
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *              email:
+ *                type: string
+ *              password:
+ *                type: string
+ *              repeatPassword:
+ *                type: string
+ *    responses:
+ *      200:
+ *        description: User signed up successfully
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                ok:
+ *                  type: boolean
+ *                status:
+ *                  type: integer
+ *                message:
+ *                  type: string
+ *                user:
+ *                  $ref: '#/components/schemas/User'
+ *      400:
+ *        description: Invalid JSON, all fields are required, invalid email, password must be between 6 and 24 characters, password do not match
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                ok:
+ *                  type: boolean
+ *                status:
+ *                  type: integer
+ *                message:
+ *                  type: string
+ *      409:
+ *        description: Email already exists
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                ok:
+ *                  type: boolean
+ *                status:
+ *                  type: integer
+ *                message:
+ *                  type: string
+ *      500:
+ *        description: Internal server error
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                ok:
+ *                  type: boolean
+ *                status:
+ *                  type: integer
+ *                message:
+ *                  type: string
+ */
 
 export default usersRouter;
