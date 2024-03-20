@@ -4,7 +4,7 @@ import cors from 'cors';
 import morgan from 'morgan';
 import swaggerUI from 'swagger-ui-express';
 import swaggerJsDoc from 'swagger-jsdoc';
-import { swaggerOptions } from './swaggerOptions';
+import { swaggerOptions } from './swagger/options.swagger';
 import usersRouter from './users/users.routes';
 import urlsRouter from './urls/urls.routes';
 
