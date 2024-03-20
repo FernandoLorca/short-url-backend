@@ -14,12 +14,14 @@ urlsRouter.post(
   urlsMiddlewares.hashUrl,
   urlsController.storageUrlDatabase
 );
+
 urlsRouter.get(
   '/getLinks',
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsController.getUserUrls
 );
+
 urlsRouter.post(
   '/update',
   urlsMiddlewares.JSONValidation,
@@ -27,6 +29,7 @@ urlsRouter.post(
   userMiddlewares.refreshToken,
   urlsController.updateCustomLink
 );
+
 urlsRouter.post(
   '/delete',
   urlsMiddlewares.JSONValidation,

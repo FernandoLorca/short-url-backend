@@ -1,0 +1,204 @@
+openapi: 3.0.0
+info:
+  title: URL Shortener
+  description: Api to shorten urls
+  version: 0.0.1
+servers:
+  - url: 'http://localhost:3000'
+    description: Local server
+
+# components
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 'The auto-generated id of the user'
+        username:
+          type: string
+          description: 'The username of the user'
+        email:
+          type: string
+          description: 'The email of the user'
+        token:
+          type: string
+          description: 'The token of the user'
+      required:
+        - username
+        - email
+        - token
+      example:
+        id: 1
+        username: 'Username example'
+        email: 'example@example.com'
+        token: 'string-token-example'
+    Url:
+      type: object
+      properties:
+        id:
+          type: boolean
+          description: 'The auto-generated id of the url'
+        originalUrl:
+          type: string
+          description: 'The original url'
+        shortUrl:
+          type: string
+          description: 'The short url'
+        customLink:
+          type: string | null
+          description: 'The custom link'
+      required:
+        - originalUrl
+        - shortUrl
+      example:
+        id: 1
+        originalUrl: 'https://example.com'
+        shortUrl: 'https://domain.com/p7zr1vVOrG'
+        customLink: 'example-of-custom-link'
+    Error:
+      type: object
+      properties:
+        ok:
+          type: boolean
+          description: 'The status of the response'
+        status:
+          type: integer
+          description: 'The status code of the response'
+        message:
+          type: string
+          description: 'The message of the response'
+      required:
+        - ok
+        - status
+      example:
+        ok: false
+        status: 400
+        message: 'Error message'
+
+# tags
+tags:
+  name: Users
+  description: The users managing API
+  name: Urls
+  description: The urls managing API
+
+# paths
+paths:
+  /api/v1/user/signin:
+    post:
+      summary: Sign in user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: User signed in successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        400:
+          description: Invalid JSON, all fields are required, invalid email, password must be between 6 and 24 characters, password do not match
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
+        404:
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
+        409:
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
+
+  /api/v1/user/signup:
+    post:
+      summary: Sign up user
+      tags: [Users]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                repeatPassword:
+                  type: string
+      responses:
+        201:
+          description: User signed up successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  status:
+                    type: integer
+                  message:
+                    type: string
+                  user:
+                    $ref: '#/components/schemas/User'
+        400:
+          description: Invalid JSON, all fields are required, invalid email, password must be between 6 and 24 characters, password do not match
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
+        409:
+          description: Email already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
+        500:
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Error'
