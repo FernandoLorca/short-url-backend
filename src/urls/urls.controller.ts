@@ -243,7 +243,7 @@ const deleteLink = async (req: Request, res: Response) => {
 
     res.status(200).json({
       ok: true,
-      status: 200,
+      status: 201,
       message: 'Url remove successfully',
       user: req.user,
       urlDeleted: {
