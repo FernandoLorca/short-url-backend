@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
+import { Urls } from './urls.model';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -113,6 +114,44 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const customLinkValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { customLink }: { customLink: string } = req.body;
+
+  try {
+    const userUrls = await Urls.findAll({
+      where: {
+        userId: req.user?.id,
+      },
+    });
+
+    userUrls.map(url => {
+      if (url.dataValues.customLink === customLink) {
+        res.status(400).json({
+          ok: false,
+          status: 400,
+          message: 'Custom link already exists',
+        });
+        return;
+      }
+    });
+
+    next();
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error.message}`,
+      });
+    }
+  }
+};
+
 const hashUrl = async (req: Request, res: Response, next: NextFunction) => {
   const url: string = req.body.url;
   const characterLimit = 20;
@@ -159,5 +198,6 @@ const hashUrl = async (req: Request, res: Response, next: NextFunction) => {
 export const urlsMiddlewares = {
   JSONValidation,
   urlsValidation,
+  customLinkValidation,
   hashUrl,
 };
