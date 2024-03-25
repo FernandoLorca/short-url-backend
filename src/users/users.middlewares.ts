@@ -77,6 +77,15 @@ const signUpInputsValidations = (
     return;
   }
 
+  if (username.length < 3 || username.length > 24) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Username must be between 3 and 24 characters',
+    });
+    return;
+  }
+
   if (!userUtilities.emailFormatValidation(email)) {
     res.status(400).json({
       ok: false,
