@@ -120,6 +120,14 @@ const updateCustomLink = async (req: Request, res: Response) => {
       return;
     }
 
+    if (customLink.lencth < 5 || customLink.length > 20) {
+      res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'Custom link must have between 5 and 20 characters',
+      });
+    }
+
     if (linkToUpdate.dataValues.userId !== id) {
       res.status(403).json({
         ok: false,
