@@ -68,10 +68,16 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
+  let urlWithSlash = url;
+
+  if (!url.endsWith('/')) {
+    urlWithSlash = `${url}/`;
+  }
+
   const urlRegex = /^(http:\/\/|https:\/\/)/;
   const validateURL = (url: string) => urlRegex.test(url);
 
-  if (!validateURL(url)) {
+  if (!validateURL(urlWithSlash)) {
     res.status(400).json({
       ok: false,
       status: 400,
@@ -80,17 +86,8 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  if (!url.endsWith('/')) {
-    res.status(400).json({
-      ok: false,
-      status: 400,
-      message: "End of URL must have a '/'",
-    });
-    return;
-  }
-
   try {
-    const isValidUrl = new URL(url);
+    const isValidUrl = new URL(urlWithSlash);
 
     if (isValidUrl.protocol !== 'https:' && isValidUrl.protocol !== 'http:') {
       res.status(400).json({
@@ -101,43 +98,7 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    next();
-  } catch (error) {
-    console.error(error);
-    if (error instanceof Error) {
-      res.status(500).json({
-        ok: false,
-        status: 500,
-        message: `Internal server error: ${error.message}`,
-      });
-    }
-  }
-};
-
-const customLinkValidation = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  const { customLink }: { customLink: string } = req.body;
-
-  try {
-    const userUrls = await Urls.findAll({
-      where: {
-        userId: req.user?.id,
-      },
-    });
-
-    userUrls.map(url => {
-      if (url.dataValues.customLink === customLink) {
-        res.status(400).json({
-          ok: false,
-          status: 400,
-          message: 'Custom link already exists',
-        });
-        return;
-      }
-    });
+    req.body.url = urlWithSlash;
 
     next();
   } catch (error) {
@@ -198,6 +159,5 @@ const hashUrl = async (req: Request, res: Response, next: NextFunction) => {
 export const urlsMiddlewares = {
   JSONValidation,
   urlsValidation,
-  customLinkValidation,
   hashUrl,
 };

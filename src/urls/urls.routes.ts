@@ -10,7 +10,6 @@ urlsRouter.post(
   urlsMiddlewares.JSONValidation,
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
-  urlsMiddlewares.customLinkValidation,
   urlsMiddlewares.urlsValidation,
   urlsMiddlewares.hashUrl,
   urlsController.storageUrlDatabase
