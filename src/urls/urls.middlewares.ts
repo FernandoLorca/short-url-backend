@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcryptjs';
 import { Urls } from './urls.model';
+import { User } from '../users/users.model';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -158,8 +159,60 @@ const hashUrl = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const customLinkValidation = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const customLink = req.body.customLink;
+
+  try {
+    const decoded = req.token?.decoded;
+    const user = await User.findOne({
+      where: {
+        id: decoded?.id,
+        email: decoded?.email,
+      },
+    });
+
+    const userUrls = await Urls.findAll({
+      where: {
+        userId: user?.id,
+      },
+    });
+
+    for (let i = 0; i < userUrls.length; i++) {
+      if (
+        userUrls[i].dataValues.customLink !== null &&
+        userUrls[i].dataValues.customLink === customLink
+      ) {
+        res.status(400).json({
+          ok: false,
+          status: 400,
+          message: 'Custom link already exists',
+        });
+        return;
+      }
+    }
+
+    req.body.customLink = customLink;
+
+    next();
+  } catch (error) {
+    console.error(error);
+    if (error instanceof Error) {
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        message: `Internal server error: ${error.message}`,
+      });
+    }
+  }
+};
+
 export const urlsMiddlewares = {
   JSONValidation,
   urlsValidation,
   hashUrl,
+  customLinkValidation,
 };

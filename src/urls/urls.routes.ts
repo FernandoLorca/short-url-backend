@@ -12,6 +12,7 @@ urlsRouter.post(
   userMiddlewares.refreshToken,
   urlsMiddlewares.urlsValidation,
   urlsMiddlewares.hashUrl,
+  urlsMiddlewares.customLinkValidation,
   urlsController.storageUrlDatabase
 );
 
