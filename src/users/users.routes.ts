@@ -20,4 +20,6 @@ usersRouter.post(
   usersController.createUser
 );
 
+usersRouter.post('/authTokenValidation', userMiddlewares.authTokenValidation);
+
 export default usersRouter;
