@@ -24,6 +24,11 @@ declare module 'express-serve-static-core' {
   }
 }
 
+interface ErrorToken {
+  isError: boolean;
+  errorMessage: null | string;
+}
+
 const JSONValidation = (
   req: Request,
   res: Response,
@@ -300,17 +305,27 @@ const authTokenValidation = (req: Request, res: Response) => {
 
   try {
     const token: string | undefined | null = bearerHeader?.split(' ')[1]!;
-    let errorToken = false;
+    let errorToken: ErrorToken = {
+      isError: false,
+      errorMessage: null,
+    };
 
     jwt.verify(token, process.env.JWT_SECRET as Secret, err => {
-      if (err?.message === 'jwt must be provided') errorToken = true;
+      if (
+        err?.message === 'jwt must be provided' ||
+        err?.message === 'jwt malformed'
+      )
+        errorToken = {
+          isError: true,
+          errorMessage: err.message,
+        };
     });
 
     if (errorToken) {
       res.status(401).json({
         ok: false,
         status: 401,
-        message: 'jwt must be provided',
+        message: errorToken.errorMessage,
       });
       return;
     }
