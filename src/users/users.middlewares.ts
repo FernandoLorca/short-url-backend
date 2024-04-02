@@ -4,7 +4,6 @@ import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import { User } from './users.model';
 import { userUtilities } from './users.utilities';
 import type { SignInRequestBody, SignUpRequestBody } from './types';
-import { error } from 'console';
 
 interface TokenInfo {
   decoded: JwtPayload;
