@@ -4,6 +4,7 @@ import jwt, { JwtPayload, Secret } from 'jsonwebtoken';
 import { User } from './users.model';
 import { userUtilities } from './users.utilities';
 import type { SignInRequestBody, SignUpRequestBody } from './types';
+import { error } from 'console';
 
 interface TokenInfo {
   decoded: JwtPayload;
@@ -286,7 +287,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      return res.status(500).json({
+      res.status(500).json({
         ok: false,
         status: 500,
         message: `Internal server error: ${error.message}`,
@@ -297,36 +298,23 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
 const authTokenValidation = (req: Request, res: Response) => {
   const bearerHeader = req.headers.authorization;
-  if (!bearerHeader) {
-    res.status(401).json({
-      ok: false,
-      status: 401,
-      message: 'Token is required',
-    });
-    return;
-  }
-  try {
-    const token = bearerHeader.split(' ')[1];
 
-    if (token === undefined) {
-      res.status(400).json({
+  try {
+    const token: string | undefined | null = bearerHeader?.split(' ')[1]!;
+    let errorToken = false;
+
+    jwt.verify(token, process.env.JWT_SECRET as Secret, err => {
+      if (err?.message === 'jwt must be provided') errorToken = true;
+    });
+
+    if (errorToken) {
+      res.status(401).json({
         ok: false,
-        status: 400,
-        message: 'Jwt must be provided',
+        status: 401,
+        message: 'jwt must be provided',
       });
       return;
     }
-
-    jwt.verify(token, process.env.JWT_SECRET as Secret, err => {
-      if (err) {
-        res.status(401).json({
-          ok: false,
-          status: 401,
-          message: 'Invalid token',
-        });
-        return;
-      }
-    });
 
     res.status(200).json({
       ok: true,
@@ -336,7 +324,7 @@ const authTokenValidation = (req: Request, res: Response) => {
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {
-      return res.status(500).json({
+      res.status(500).json({
         ok: false,
         status: 500,
         message: `Internal server error: ${error.message}`,
