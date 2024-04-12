@@ -179,7 +179,8 @@ const customLinkValidation = async (
     for (let i = 0; i < userUrls.length; i++) {
       if (
         userUrls[i].dataValues.customLink !== null &&
-        userUrls[i].dataValues.customLink === customLink
+        userUrls[i].dataValues.customLink.toLowerCase() ===
+          customLink.toLocaleLowerCase()
       ) {
         res.status(400).json({
           ok: false,

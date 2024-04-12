@@ -27,10 +27,10 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
         email: req.user?.email,
         token: req.user?.refreshToken,
       },
-      data: {
+      url: {
         id: storageDatabase.dataValues.id,
-        originalUrl: storageDatabase.dataValues.original,
-        shortUrl: storageDatabase.dataValues.short,
+        original: storageDatabase.dataValues.original,
+        short: storageDatabase.dataValues.short,
         customLink: storageDatabase.dataValues.customLink,
       },
     });
