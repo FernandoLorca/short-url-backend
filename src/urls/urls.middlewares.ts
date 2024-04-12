@@ -72,11 +72,6 @@ const urlsValidation = (req: Request, res: Response, next: NextFunction) => {
   }
 
   let urlWithSlash = url;
-
-  if (!url.endsWith('/')) {
-    urlWithSlash = `${url}/`;
-  }
-
   const urlRegex = /^(http:\/\/|https:\/\/)/;
   const validateURL = (url: string) => urlRegex.test(url);
 
@@ -164,7 +159,7 @@ const customLinkValidation = async (
   res: Response,
   next: NextFunction
 ) => {
-  const customLink = req.body.customLink;
+  const customLink: string = req.body.customLink;
 
   try {
     const decoded = req.token?.decoded;
@@ -195,7 +190,7 @@ const customLinkValidation = async (
       }
     }
 
-    req.body.customLink = customLink;
+    req.body.customLink = customLink.toLowerCase();
 
     next();
   } catch (error) {
