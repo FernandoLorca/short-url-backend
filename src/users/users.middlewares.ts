@@ -309,11 +309,21 @@ const authTokenValidation = (req: Request, res: Response) => {
       isError: false,
       errorMessage: null,
     };
+    if (!token || token === null) {
+      res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'Token is required',
+      });
+      return;
+    }
 
     jwt.verify(token, process.env.JWT_SECRET as Secret, err => {
       if (
         err?.message === 'jwt must be provided' ||
-        err?.message === 'jwt malformed'
+        err?.message === 'jwt malformed' ||
+        err?.message === 'invalid signature' ||
+        err?.message === 'invalid token'
       )
         errorToken = {
           isError: true,
@@ -321,7 +331,7 @@ const authTokenValidation = (req: Request, res: Response) => {
         };
     });
 
-    if (errorToken) {
+    if (errorToken.isError) {
       res.status(401).json({
         ok: false,
         status: 401,
