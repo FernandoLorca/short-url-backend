@@ -17,7 +17,7 @@ urlsRouter.post(
 );
 
 urlsRouter.get(
-  '/getLinks',
+  '/getUrls',
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
   urlsController.getUserUrls
