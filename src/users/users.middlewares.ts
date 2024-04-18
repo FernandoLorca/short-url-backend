@@ -278,6 +278,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
           status: 401,
           message: 'Token expired',
         });
+        return;
       }
     }
 
@@ -305,17 +306,39 @@ const authTokenValidation = (req: Request, res: Response) => {
 
   try {
     const token: string | undefined | null = bearerHeader?.split(' ')[1]!;
+
     let errorToken: ErrorToken = {
       isError: false,
       errorMessage: null,
     };
-    if (!token || token === null) {
+
+    if (!token || token === null || token === 'null') {
       res.status(400).json({
         ok: false,
         status: 400,
         message: 'Token is required',
       });
       return;
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as Secret, {
+      ignoreExpiration: true,
+    }) as JwtPayload;
+
+    if (decoded && typeof decoded === 'object' && decoded.exp !== undefined) {
+      const expirationTimestamp = decoded.exp * 1000;
+      const currentTimestamp = Date.now();
+
+      console.log(expirationTimestamp < currentTimestamp);
+
+      if (expirationTimestamp < currentTimestamp) {
+        res.status(401).json({
+          ok: false,
+          status: 401,
+          message: 'Token expired',
+        });
+        return;
+      }
     }
 
     jwt.verify(token, process.env.JWT_SECRET as Secret, err => {
