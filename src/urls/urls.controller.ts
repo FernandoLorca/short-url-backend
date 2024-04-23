@@ -7,17 +7,25 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
   const urls = req.urls;
   const customLink = req.body.customLink;
 
+  if (customLink.lencth < 5 || customLink.length > 40) {
+    res.status(400).json({
+      ok: false,
+      status: 400,
+      message: 'Custom link must have between 5 and 40 characters',
+    });
+    return;
+  }
+
   try {
     const storageDatabase = await Urls.create({
       original: urls?.url,
       short: `${process.env.DOMAIN}${urls?.shortLink}`,
       hash: urls?.hash,
       userId,
-      customLink,
+      customLink: customLink.toLowerCase().trim().replace(/\s+/g, '-'),
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-
     res.status(201).json({
       ok: true,
       status: 201,
@@ -25,9 +33,9 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
         id: req.user?.id,
         username: req.user?.username,
         email: req.user?.email,
-        token: req.user?.refreshToken,
+        token: req.user?.token,
       },
-      url: {
+      urls: {
         id: storageDatabase.dataValues.id,
         original: storageDatabase.dataValues.original,
         short: storageDatabase.dataValues.short,
@@ -84,7 +92,7 @@ const getUserUrls = async (req: Request, res: Response) => {
         id: req.user?.id,
         username: req.user?.username,
         email: req.user?.email,
-        token: req.user?.refreshToken,
+        token: req.user?.token,
       },
       urls: urlsFromUser,
     });
@@ -120,12 +128,13 @@ const updateCustomLink = async (req: Request, res: Response) => {
       return;
     }
 
-    if (customLink.lencth < 5 || customLink.length > 20) {
+    if (customLink.lencth < 5 || customLink.length > 40) {
       res.status(400).json({
         ok: false,
         status: 400,
-        message: 'Custom link must have between 5 and 20 characters',
+        message: 'Custom link must have between 5 and 40 characters',
       });
+      return;
     }
 
     if (linkToUpdate.dataValues.userId !== id) {
@@ -148,7 +157,7 @@ const updateCustomLink = async (req: Request, res: Response) => {
 
     const updateCustomLink = await Urls.update(
       {
-        customLink,
+        customLink: customLink.toLowerCase().trim().replace(/\s+/g, '-'),
       },
       {
         where: {
@@ -179,7 +188,7 @@ const updateCustomLink = async (req: Request, res: Response) => {
         id: req.user?.id,
         username: req.user?.username,
         email: req.user?.email,
-        token: req.user?.refreshToken,
+        token: req.user?.token,
       },
       data: {
         id: linkWithNewCustomLink?.dataValues.id,

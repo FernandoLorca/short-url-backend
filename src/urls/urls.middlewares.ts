@@ -160,6 +160,8 @@ const customLinkValidation = async (
   next: NextFunction
 ) => {
   const customLink: string = req.body.customLink;
+  const nullCustomLinkProcessed =
+    customLink !== null && customLink.toLowerCase();
 
   try {
     const decoded = req.token?.decoded;
@@ -180,7 +182,7 @@ const customLinkValidation = async (
       if (
         userUrls[i].dataValues.customLink !== null &&
         userUrls[i].dataValues.customLink.toLowerCase() ===
-          customLink.toLocaleLowerCase()
+          nullCustomLinkProcessed
       ) {
         res.status(400).json({
           ok: false,
@@ -191,9 +193,17 @@ const customLinkValidation = async (
       }
     }
 
-    req.body.customLink = customLink.toLowerCase();
+    if (customLink === null || customLink === '') {
+      req.body.customLink = null;
+      next();
+      return;
+    }
 
-    next();
+    if (customLink !== null) {
+      req.body.customLink = nullCustomLinkProcessed;
+      next();
+      return;
+    }
   } catch (error) {
     console.error(error);
     if (error instanceof Error) {

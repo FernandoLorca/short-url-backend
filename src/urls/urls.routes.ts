@@ -23,7 +23,7 @@ urlsRouter.get(
   urlsController.getUserUrls
 );
 
-urlsRouter.post(
+urlsRouter.patch(
   '/update',
   urlsMiddlewares.JSONValidation,
   userMiddlewares.verifyToken,
@@ -31,12 +31,11 @@ urlsRouter.post(
   urlsController.updateCustomLink
 );
 
-urlsRouter.post(
+urlsRouter.delete(
   '/delete',
   urlsMiddlewares.JSONValidation,
   userMiddlewares.verifyToken,
   userMiddlewares.refreshToken,
-
   urlsController.deleteLink
 );
 

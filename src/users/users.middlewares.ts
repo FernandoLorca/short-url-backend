@@ -19,7 +19,7 @@ declare module 'express-serve-static-core' {
       email: string;
       username: string;
       password?: string;
-      refreshToken?: string;
+      token?: string;
     };
   }
 }
@@ -329,8 +329,6 @@ const authTokenValidation = (req: Request, res: Response) => {
       const expirationTimestamp = decoded.exp * 1000;
       const currentTimestamp = Date.now();
 
-      console.log(expirationTimestamp < currentTimestamp);
-
       if (expirationTimestamp < currentTimestamp) {
         res.status(401).json({
           ok: false,
@@ -420,7 +418,7 @@ const refreshToken = async (
       id: user.id,
       email: user.email,
       username: user.username,
-      refreshToken,
+      token: refreshToken,
     };
 
     next();
