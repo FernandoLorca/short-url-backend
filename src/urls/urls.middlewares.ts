@@ -161,7 +161,7 @@ const customLinkValidation = async (
 ) => {
   const customLink: string = req.body.customLink;
   const nullCustomLinkProcessed =
-    customLink !== null && customLink.toLowerCase();
+    customLink !== null && customLink.toLowerCase().trim();
 
   try {
     const decoded = req.token?.decoded;
@@ -181,8 +181,7 @@ const customLinkValidation = async (
     for (let i = 0; i < userUrls.length; i++) {
       if (
         userUrls[i].dataValues.customLink !== null &&
-        userUrls[i].dataValues.customLink.toLowerCase() ===
-          nullCustomLinkProcessed
+        userUrls[i].dataValues.customLink === nullCustomLinkProcessed
       ) {
         res.status(400).json({
           ok: false,

@@ -7,13 +7,15 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
   const urls = req.urls;
   const customLink = req.body.customLink;
 
-  if (customLink.lencth < 5 || customLink.length > 40) {
-    res.status(400).json({
-      ok: false,
-      status: 400,
-      message: 'Custom link must have between 5 and 40 characters',
-    });
-    return;
+  if (customLink !== null) {
+    if (customLink.length < 5 || customLink.length > 40) {
+      res.status(400).json({
+        ok: false,
+        status: 400,
+        message: 'Custom link must have between 5 and 40 characters',
+      });
+      return;
+    }
   }
 
   try {
@@ -22,7 +24,10 @@ const storageUrlDatabase = async (req: Request, res: Response) => {
       short: `${process.env.DOMAIN}${urls?.shortLink}`,
       hash: urls?.hash,
       userId,
-      customLink: customLink.toLowerCase().trim().replace(/\s+/g, '-'),
+      customLink:
+        customLink !== null
+          ? customLink.toLowerCase().trim().replace(/\s+/g, '-')
+          : null,
       createdAt: new Date(),
       updatedAt: new Date(),
     });
